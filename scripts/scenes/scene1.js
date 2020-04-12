@@ -29,9 +29,12 @@ class Scene1 extends Phaser.Scene {
             var y = 35
             for (var j = 0; j < 7; j++) {
                 var piece = new Piece(this, sprite, x, y)
+
                 piece.setDepth(5)
                 piece.playerId = i;
                 piece.boardPosition = -1;
+                piece.id = j;
+
                 pieces.add(piece)
                 y += config.pieces.width + 10
             }
@@ -78,6 +81,8 @@ class Scene1 extends Phaser.Scene {
             square.lineWidth = 2
             square.strokeColor = 0xff0000
 
+            square.occupied = -1;
+
             board.add(square)
             iter++
 
@@ -114,11 +119,16 @@ class Scene1 extends Phaser.Scene {
 
 
     rollDice() {
-        this.dice.removeInteractive()
         this.roll = Math.round(Math.random() * 4)
-        console.log(this.roll)
+        if (this.roll > 0) {
+            this.dice.removeInteractive()
+            console.log(this.roll)
 
-        this.input.setHitArea(player[this.turn].pieces.getChildren()).on('gameobjectdown', (pointer, gameObject) => this.movePiece(pointer, gameObject))
+            this.input.setHitArea(player[this.turn].pieces.getChildren()).on('gameobjectdown', (pointer, gameObject) => this.movePiece(pointer, gameObject))
+        } else {
+            this.turn = 1 - this.turn;
+        }
+
     }
 
     movePiece(pointer, piece) {
@@ -128,16 +138,20 @@ class Scene1 extends Phaser.Scene {
         if (piece.playerId == playerId) {
 
             if (piece.isMovable(this.roll)) {
-                piece.movePiece(this.roll);
+                piece.move(this.roll);
 
-                // Change Turn
-                this.turn = 1 - this.turn;
-
-                this.input.removeAllListeners('gameobjectdown')
-                this.dice.setInteractive()
+                this.changeTurn()
             }
         }
 
+    }
+
+    changeTurn() {
+        // Change Turn
+        this.turn = 1 - this.turn;
+
+        this.input.removeAllListeners('gameobjectdown')
+        this.dice.setInteractive()
     }
 
 }
