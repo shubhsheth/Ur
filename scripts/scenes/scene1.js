@@ -14,6 +14,8 @@ class Scene1 extends Phaser.Scene {
         player[0].piecePosition = 100
         player[1].piecePosition = config.width - 100
 
+        this.turn = 0
+
     }
 
     create() {
@@ -27,67 +29,31 @@ class Scene1 extends Phaser.Scene {
             var y = 35
             for (var j = 0; j < 7; j++) {
                 var piece = new Piece(this, sprite, x, y)
-                piece.setDepth(2)
+                piece.setDepth(5)
+                piece.playerId = i;
+                piece.boardPosition = -1;
                 pieces.add(piece)
                 y += config.pieces.width + 10
             }
             player[i].pieces = pieces;
         }
 
+        // player[0].pieces.on('pointerdown', () => this.movePiece(this))
 
-        //Build Board
-        this.board = this.add.group()
-        var x = config.width / 2 - config.board.cellWidth
-        var y = config.height / 2 - (config.board.cellHeight / 2)
-        var iter = 0;
 
-        while (iter < 20) {
-            var square = this.add.rectangle(x, y, config.board.cellWidth, config.board.cellHeight, 0x000000)
-            square.setDepth(1)
-            square.isStroked = true
-            square.lineWidth = 2
-            square.strokeColor = 0xff0000
-            square.text = i
-            this.board.add(square)
+        //Build Board Route
+        for (var i = 0; i < player.length; i++) {
 
-            iter++
+            var x = (config.width / 2 - config.board.cellDimension) + (config.board.cellDimension * 2 * i)
+            var y = (config.height / 2 - config.board.cellDimension / 2)
 
-            switch (true) {
-                case (iter <= 7):
-                    // Top 4 in Left and Right columns
-                    if (iter % 2 == 0) {
-                        y -= config.board.cellHeight
-                        x -= (2 * config.board.cellWidth)
-                    } else {
-                        x += (2 * config.board.cellWidth)
-                    }
-                    break
+            var sideMultiplier = 1
+            if (i == 1)
+                sideMultiplier = -1
 
-                case (iter == 8):
-                    // Top 1 in Middle column
-                    x -= config.board.cellWidth
-                    break
-
-                case (iter == 16):
-                    // Bottom Left
-                    x -= config.board.cellWidth
-                    break
-
-                case (iter > 16):
-                    // Bottom 3 in Left and Right Columns
-                    if (iter % 2 == 0) {
-                        y -= config.board.cellHeight
-                        x -= (2 * config.board.cellWidth)
-                    } else {
-                        x += (2 * config.board.cellWidth)
-                    }
-                    break
-
-                default:
-                    // Middle column from 2nd
-                    y += config.board.cellHeight
-            }
+            player[i].route = this.buildBoard(x, y, sideMultiplier)
         }
+
 
 
 
@@ -99,12 +65,79 @@ class Scene1 extends Phaser.Scene {
 
     }
 
+    buildBoard(x, y, sideMultiplier) {
+
+        var board = this.add.group()
+        var iter = 0;
+
+        while (iter < 14) {
+            var square = this.add.rectangle(x, y, config.board.cellDimension, config.board.cellDimension, 0x000000)
+
+            square.setDepth(1)
+            square.isStroked = true
+            square.lineWidth = 2
+            square.strokeColor = 0xff0000
+
+            board.add(square)
+            iter++
+
+            switch (true) {
+                case (iter < 4):
+                    // Start Column
+                    y -= config.board.cellDimension
+                    break
+
+                case (iter == 4):
+                    // Middle Column 1st
+                    x += (config.board.cellDimension * sideMultiplier)
+                    break
+
+                case (iter < 12):
+                    // Middle Column
+                    y += config.board.cellDimension
+                    break
+
+                case (iter == 12):
+                    // End Column 1st
+                    x -= (config.board.cellDimension * sideMultiplier)
+                    break
+
+                default:
+                    // End Column
+                    y -= config.board.cellDimension
+            }
+        }
+
+        return board
+    }
+
+
+
     rollDice() {
         this.dice.removeInteractive()
         this.roll = Math.round(Math.random() * 4)
         console.log(this.roll)
 
-        
+        this.input.setHitArea(player[this.turn].pieces.getChildren()).on('gameobjectdown', (pointer, gameObject) => this.movePiece(pointer, gameObject))
+    }
+
+    movePiece(pointer, piece) {
+
+        var playerId = this.turn
+
+        if (piece.playerId == playerId) {
+
+            if (piece.isMovable(this.roll)) {
+                piece.movePiece(this.roll);
+
+                // Change Turn
+                this.turn = 1 - this.turn;
+
+                this.input.removeAllListeners('gameobjectdown')
+                this.dice.setInteractive()
+            }
+        }
+
     }
 
 }

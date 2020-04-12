@@ -11,4 +11,8 @@ class Piece extends Phaser.GameObjects.Sprite {
     create() {
 
     }
+
+    isMovable(roll) {
+        // moveCell = 
+    }
 }

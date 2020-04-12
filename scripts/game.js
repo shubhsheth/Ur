@@ -4,8 +4,7 @@ var config = {
     backgroundColor: 0x2089b9,
 
     board: {
-        cellWidth: 65,
-        cellHeight: 65,
+        cellDimension: 65
     },
     pieces: {
         width: 40,
