@@ -3,12 +3,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    // entry: {
-    //     game: './src/client/index.js',
-    // },
-    entry: () => './src/client/index.js',
+    entry: {
+        game: './src/client/index.js',
+    },
     output: {
-        filename: '[name].[contenthash].js',
+        filename: 'main.js',
         path: path.resolve(__dirname, 'dist'),
     },
     module: {
@@ -36,11 +35,11 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: '[name].[contenthash].css',
+            filename: 'main.css',
         }),
         new HtmlWebpackPlugin({
             filename: 'index.html',
-            template: 'src/client/html/index.html',
+            template: 'src/client/index.html',
         }),
     ],
 };

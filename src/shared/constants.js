@@ -10,5 +10,11 @@ module.exports = Object.freeze({
     PIECE: {
         WIDTH: 40,
         HEIGHT: 40,
-    }
+    },
+    MSG_TYPES: {
+        JOIN_GAME: 'join_game',
+        GAME_UPDATE: 'update',
+        INPUT: 'input',
+        GAME_OVER: 'dead',
+    },
 });
