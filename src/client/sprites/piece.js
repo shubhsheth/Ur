@@ -16,7 +16,7 @@ export default class Piece extends Phaser.GameObjects.Sprite {
         // Events
         this.on('pointerdown', () => {
             if (scene.players[this.playerId].hasTurn && scene.roll > 0) {
-                this.movePeice(scene);
+                this.movePiece(scene);
             }
         });
     }
@@ -42,7 +42,7 @@ export default class Piece extends Phaser.GameObjects.Sprite {
         return true;
     }
 
-    movePeice(scene) {
+    movePiece(scene) {
         if (this.isMovable(scene)) {
 
             var newPosition = this.boardPosition + scene.roll;
@@ -67,8 +67,8 @@ export default class Piece extends Phaser.GameObjects.Sprite {
             this.x = coords.x;
             this.y = coords.y;
 
-            this.boardPosition = newPosition;
             player.movedPiece(this.id, this.boardPosition, newPosition);
+            this.boardPosition = newPosition;
 
             scene.endTurn();
         }

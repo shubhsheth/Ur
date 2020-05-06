@@ -16,12 +16,12 @@ export default class Game extends Phaser.Scene {
     preload() {
         this.load.image("player-1", "/assets/player1.png")
         this.load.image("player-2", "/assets/player2.png")
-
-        this.roll = -1;
     }
 
     create() {
+
         // Dice
+        this.roll = -1;
         this.dice = new Dice(this);
         this.dice.setInteractive();
 

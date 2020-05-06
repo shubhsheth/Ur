@@ -73,7 +73,9 @@ export default class Route extends Phaser.GameObjects.Group {
     }
 
     movedPiece(pieceId, currentPos, newPos) {
-        this.children.entries[currentPos].occupiedId = -1;
+        if (currentPos >= 0) {
+            this.children.entries[currentPos].occupiedId = -1;
+        }
         this.children.entries[newPos].occupiedId = pieceId;
     }
 
