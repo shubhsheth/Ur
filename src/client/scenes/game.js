@@ -17,25 +17,23 @@ export default class Game extends Phaser.Scene {
         this.load.image("player-1", "/assets/player1.png")
         this.load.image("player-2", "/assets/player2.png")
 
-        this.turn = 0
+        this.roll = -1;
     }
 
     create() {
-
         // Dice
         this.dice = new Dice(this);
         this.dice.setInteractive();
-        this.dice.on('pointerdown', () => this.dice.rollDice());
 
         // Players
-        this.player = new Array();
-        this.player[0] = new Player(this, 1, 100);
-        this.player[1] = new Player(this, 2, Constants.CONFIG.width - 100);
+        this.players = new Array();
+        this.players[0] = new Player(this, 0, 100);
+        this.players[1] = new Player(this, 1, Constants.CONFIG.width - 100);
 
+        this.players[0].hasTurn = true;
     }
 
-    update() {
-
-
+    endTurn() {
+        this.dice.endTurn(this);
     }
 }
