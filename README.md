@@ -1,3 +1,5 @@
+<img src="https://img.shields.io/badge/status-inprogress-orange">
+
 # Introduction
 Building a multiplayer board game using PhaserJS. The multiplayer aspect is handled using WebSockets.
 
